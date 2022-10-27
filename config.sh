@@ -30,7 +30,7 @@ OUTPUT="OrangeFox*.zip"
 
 # Extra Command
 EXTRA_CMD1="git clone https://github.com/OrangeFoxRecovery/Avatar.git misc"
-EXTRA_CMD2=""
+EXTRA_CMD2="git clone --depth=1 https://github.com/NFS-Project/ofx_device_xiaomi_whyred -b fox_9.0 device/xiaomi/whyred"
 EXTRA_CMD3=""
 EXTRA_CMD4=""
 EXTRA_CMD5=""
