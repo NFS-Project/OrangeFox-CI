@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Default Branch for Orangefox
-FOX_BRANCH="fox_12"
+FOX_BRANCH="fox_12.1"
 ARGS_EXTRA=""
 ORANGEFOX_MAINTAINER_NAME="zacky"
 
