@@ -53,3 +53,4 @@ else
     KERNEL_PATH="kernel/$OEM/$DEVICE"
 fi
 DT_PATH="device/$OEM/$DEVICE"
+
