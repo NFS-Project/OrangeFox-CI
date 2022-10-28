@@ -3,20 +3,7 @@
 # Source Configs
 source $CONFIG
 
-# A Function to Send Posts to Telegram
-telegram_message() {
-	curl -v "https://api.telegram.org/bot""$TG_TOKEN""/sendPhoto?chat_id=""$TG_CHAT_ID""$ARGS_EXTRA" -H 'Content-Type: multipart/form-data' \
-	--form photo="$START_BUILD_LOGO" \
-	-F "parse_mode=html" \
-	-F caption="🦊 <b>OrangeFox Recovery CI</b>
-==========================
-✔️ <b>The Build has been Triggered</b>
-
-📱 <b>Device:</b> "${DEVICE}"
-🖥 <b>Build System:</b> "${FOX_BRANCH}"
-🌲 <b>Logs:</b> <a href=\"https://cirrus-ci.com/build/${CIRRUS_BUILD_ID}\">Here</a>
-=========================="
-}
+timeStart
 
 # Change to the Source Directry
 cd $SYNC_PATH
@@ -51,6 +38,7 @@ $EXTRA_CMD4
 $EXTRA_CMD5
 
 # export some Basic Vars
+echo -e ${blu}"CCACHE is enabled for this build"${txtrst}
 export ALLOW_MISSING_DEPENDENCIES=true
 export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
 export LC_ALL="C"
@@ -61,6 +49,7 @@ export CCACHE_EXEC=$(which ccache)
 export CCACHE_COMPRESS=true
 which ccache
 ccache -z
+BUILDLOG="$SYNC_PATH/build.log"
 
 # Default Build Type
 if [ -z "$FOX_BUILD_TYPE" ]; then
@@ -68,7 +57,11 @@ if [ -z "$FOX_BUILD_TYPE" ]; then
 fi
 
 # Prepare the Build Environment
+build_message "Prepare for build..."
 . build/envsetup.sh
+
+# Default Maintainer's Name
+[ -z "$OF_MAINTAINER" ] && export OF_MAINTAINER="$ORANGEFOX_MAINTAINER_NAME"
 
 # Set BRANCH_INT variable for future use
 BRANCH_INT=$(echo $SYNC_BRANCH | cut -d. -f1)
@@ -87,18 +80,25 @@ fi
 
 # lunch the target
 if [ "$BRANCH_INT" -ge 11 ]; then
+    build_message "lunch twrp_${DEVICE}-eng"
     lunch twrp_${DEVICE}-eng || { echo "ERROR: Failed to lunch the target!" && exit 1; }
 else
+    build_message "lunch omni_${DEVICE}-eng"
     lunch omni_${DEVICE}-eng || { echo "ERROR: Failed to lunch the target!" && exit 1; }
 fi
 
 # Build the Code
+mkfifo reading
+tee "${BUILDLOG}" < reading &
+build_message "Staring bro...🔥"
+sleep 2
+build_message "🛠️ Building..."
 if [ -z "$J_VAL" ]; then
-    mka -j$(nproc --all) $TARGET |& tee -a $SYNC_PATH/build.log || { echo "ERROR: Failed to Build OrangeFox!" && exit 1; }
+    progress |& mka -j$(nproc --all) $TARGET > reading || { echo "ERROR: Failed to Build OrangeFox!" && exit 1; }
 elif [ "$J_VAL"="0" ]; then
-    mka $TARGET |& tee -a $SYNC_PATH/build.log || { echo "ERROR: Failed to Build OrangeFox!" && exit 1; }
+    progress |& mka $TARGET > reading || { echo "ERROR: Failed to Build OrangeFox!" && exit 1; }
 else
-    mka -j${J_VAL} $TARGET |& tee -a $SYNC_PATH/build.log || { echo "ERROR: Failed to Build OrangeFox!" && exit 1; }
+    progress |& mka -j${J_VAL} $TARGET > reading || { echo "ERROR: Failed to Build OrangeFox!" && exit 1; }
 fi
 
 # Exit
