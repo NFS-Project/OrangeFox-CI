@@ -155,7 +155,7 @@ progress() {
         PERCENTAGE=$(cat $BUILDLOG | tail -n 1 | awk '{ print $2 }')
         NUMBER=$(echo ${PERCENTAGE} | sed 's/[^0-9]*//g')
 
-        # Report percentage to the $CHAT_ID
+        # Report percentage to the $TG_CHAT_ID
         if [[ "${NUMBER}" != "" ]]; then
             if [[ "${NUMBER}" -le  "99" ]]; then
                 if [[ "${NUMBER}" != "${NUMBER_OLD}" ]] && [[ "$NUMBER" != "" ]] && ! cat $BUILDLOG | tail  -n 1 | grep "glob" > /dev/null && ! cat $BUILDLOG | tail  -n 1 | grep "including" > /dev/null && ! cat $BUILDLOG | tail  -n 1 | grep "soong" > /dev/null && ! cat $BUILDLOG | tail  -n 1 | grep "finishing" > /dev/null; then
@@ -177,7 +177,7 @@ progress() {
 
 build_message() {
 	if [ "$CI_MESSAGE_ID" = "" ]; then
-CI_MESSAGE_ID=$(tg_send_message --chat_id "$CHAT_ID" --text "<b>=== Starting Build OrangeFox ===</b>
+CI_MESSAGE_ID=$(tg_send_message --chat_id "$TG_CHAT_ID" --text "<b>=== Starting Build OrangeFox ===</b>
 <b>Branch:</b> <code>${FOX_BRANCH}</code>
 <b>Device:</b> <code>${DEVICE}</code>
 <b>Type:</b> <code>${BUILDTYPE}</code>
@@ -187,7 +187,7 @@ CI_MESSAGE_ID=$(tg_send_message --chat_id "$CHAT_ID" --text "<b>=== Starting Bui
 
 <b>Status:</b> <code>${1}</code>" --parse_mode "html" | jq .result.message_id)
 	else
-tg_edit_message_text --chat_id "$CHAT_ID" --message_id "$CI_MESSAGE_ID" --text "<b>=== Starting Build OrangeFox ===</b>
+tg_edit_message_text --chat_id "$TG_CHAT_ID" --message_id "$CI_MESSAGE_ID" --text "<b>=== Starting Build OrangeFox ===</b>
 <b>Branch:</b> <code>${FOX_BRANCH}</code>
 <b>Device:</b> <code>${DEVICE}</code>
 <b>Type:</b> <code>${BUILDTYPE}</code>
@@ -204,40 +204,40 @@ statusBuild() {
         build_message "Build Aborted 😡 with Code Exit ${retVal}.
 
 Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
-        tg_send_message --chat_id "$CHAT_ID_SECOND" --text "Build Aborted 💔 with Code Exit ${retVal}.
+        tg_send_message --chat_id "$TG_CHAT_ID_SECOND" --text "Build Aborted 💔 with Code Exit ${retVal}.
 Sudah kubilang yang teliti 😡"
         echo "Build Aborted"
-        tg_send_document --chat_id "$CHAT_ID" --document "$BUILDLOG" --reply_to_message_id "$CI_MESSAGE_ID"
+        tg_send_document --chat_id "$TG_CHAT_ID" --document "$BUILDLOG" --reply_to_message_id "$CI_MESSAGE_ID"
         LOGTRIM="$CDIR/out/log_trimmed.log"
         sed -n '/FAILED:/,//p' $BUILDLOG &> $LOGTRIM
-        tg_send_document --chat_id "$CHAT_ID" --document "$LOGTRIM" --reply_to_message_id "$CI_MESSAGE_ID"
+        tg_send_document --chat_id "$TG_CHAT_ID" --document "$LOGTRIM" --reply_to_message_id "$CI_MESSAGE_ID"
         exit $retVal
     fi
     if [[ $retVal -eq 141 ]]; then
         build_message "Build Aborted 👎 with Code Exit ${retVal}, See log.
 
 Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
-        tg_send_message --chat_id "$CHAT_ID_SECOND" --text "Build Aborted 💔 with Code Exit ${retVal}."
+        tg_send_message --chat_id "$TG_CHAT_ID_SECOND" --text "Build Aborted 💔 with Code Exit ${retVal}."
         echo "Build Aborted"
-        tg_send_document --chat_id "$CHAT_ID" --document "$BUILDLOG" --reply_to_message_id "$CI_MESSAGE_ID"
+        tg_send_document --chat_id "$TG_CHAT_ID" --document "$BUILDLOG" --reply_to_message_id "$CI_MESSAGE_ID"
         LOGTRIM="$CDIR/out/log_trimmed.log"
         sed -n '/FAILED:/,//p' $BUILDLOG &> $LOGTRIM
-        tg_send_document --chat_id "$CHAT_ID" --document "$LOGTRIM" --reply_to_message_id "$CI_MESSAGE_ID"
+        tg_send_document --chat_id "$TG_CHAT_ID" --document "$LOGTRIM" --reply_to_message_id "$CI_MESSAGE_ID"
         exit $retVal
     fi
     if [[ $retVal -ne 0 ]]; then
         build_message "Build Error 💔 with Code Exit ${retVal}, See log.
 
 Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
-        tg_send_message --chat_id "$CHAT_ID_SECOND" --text "Build Error 💔 with Code Exit ${retVal}."
+        tg_send_message --chat_id "$TG_CHAT_ID_SECOND" --text "Build Error 💔 with Code Exit ${retVal}."
         echo "Build Error"
-        tg_send_document --chat_id "$CHAT_ID" --document "$BUILDLOG" --reply_to_message_id "$CI_MESSAGE_ID"
+        tg_send_document --chat_id "$TG_CHAT_ID" --document "$BUILDLOG" --reply_to_message_id "$CI_MESSAGE_ID"
         LOGTRIM="$CDIR/out/log_trimmed.log"
         sed -n '/FAILED:/,//p' $BUILDLOG &> $LOGTRIM
-        tg_send_document --chat_id "$CHAT_ID" --document "$LOGTRIM" --reply_to_message_id "$CI_MESSAGE_ID"
+        tg_send_document --chat_id "$TG_CHAT_ID" --document "$LOGTRIM" --reply_to_message_id "$CI_MESSAGE_ID"
         exit $retVal
     fi
     build_message "Build success ❤️"
-    tg_send_message --chat_id "$CHAT_ID" --text "Build Success ❤️
+    tg_send_message --chat_id "$TG_CHAT_ID" --text "Build Success ❤️
 Congratsss I'm Happy for you :v"
 }
