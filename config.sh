@@ -83,6 +83,8 @@ telegram_curl() {
     shift
     if [[ "${HTTP_REQUEST}" != "POST_FILE" ]]; then
         curl -s -X "${HTTP_REQUEST}" "https://api.telegram.org/bot$TG_TOKEN/$ACTION" "$@" | jq .
+    elif [[ "${HTTP_REQUEST}" != "POST_PHOTO" ]]; then
+        curl -v "https://api.telegram.org/bot$TG_TOKEN/$ACTION" $ARGS_EXTRA" -H 'Content-Type: multipart/form-data' "$@" | jq .
     else
         curl -s "https://api.telegram.org/bot$TG_TOKEN/$ACTION" "$@" | jq .
     fi
@@ -100,6 +102,8 @@ telegram_main() {
                 ;;
             --* )
                 if [[ "$HTTP_REQUEST" != "POST_FILE" ]]; then
+                    local CURL_ARGUMENTS+=(-d $(echo "${1}" | sed 's/--//')="${2}")
+                elif [[ "$HTTP_REQUEST" != "POST_FILE" ]]; then
                     local CURL_ARGUMENTS+=(-d $(echo "${1}" | sed 's/--//')="${2}")
                 else
                     local CURL_ARGUMENTS+=(-F $(echo "${1}" | sed 's/--//')="${2}")
@@ -124,6 +128,12 @@ telegram_curl_post() {
     telegram_main "${ACTION}" POST "$@"
 }
 
+telegram_curl_post_photo() {
+    local ACTION=${1}
+    shift
+    telegram_main "${ACTION}" POST_PHOTO "$@"
+}
+
 telegram_curl_post_file() {
     local ACTION=${1}
     shift
@@ -136,6 +146,10 @@ tg_send_message() {
 
 tg_edit_message_text() {
     telegram_main editMessageText POST "$@"
+}
+
+tg_send_photo() {
+    telegram_main sendPhoto POST_PHOTO "$@"
 }
 
 tg_send_document() {
@@ -177,25 +191,23 @@ progress() {
 
 build_message() {
 	if [ "$CI_MESSAGE_ID" = "" ]; then
-CI_MESSAGE_ID=$(tg_send_message --chat_id "$TG_CHAT_ID" --text "<b>=== Starting Build OrangeFox ===</b>
+CI_MESSAGE_ID=$(tg_send_photo --chat_id "$TG_CHAT_ID" --caption "<b>=== Starting Build OrangeFox ===</b>
 <b>Branch:</b> <code>${FOX_BRANCH}</code>
 <b>Device:</b> <code>${DEVICE}</code>
-<b>Type:</b> <code>${BUILDTYPE}</code>
 <b>Job:</b> <code>$(nproc --all) Paralel processing</code>
 <b>Running on:</b> <code>$DISTRO</code>
 <b>Started at</b> <code>$DATE</code>
 
-<b>Status:</b> <code>${1}</code>" --parse_mode "html" | jq .result.message_id)
+<b>Status:</b> <code>${1}</code>" --form photo="$START_BUILD_LOGO" --parse_mode "html" | jq .result.message_id)
 	else
-tg_edit_message_text --chat_id "$TG_CHAT_ID" --message_id "$CI_MESSAGE_ID" --text "<b>=== Starting Build OrangeFox ===</b>
+tg_edit_message_text --chat_id "$TG_CHAT_ID" --message_id "$CI_MESSAGE_ID" --caption "<b>=== Starting Build OrangeFox ===</b>
 <b>Branch:</b> <code>${FOX_BRANCH}</code>
 <b>Device:</b> <code>${DEVICE}</code>
-<b>Type:</b> <code>${BUILDTYPE}</code>
 <b>Job:</b> <code>$(nproc --all) Paralel processing</code>
 <b>Running on:</b> <code>$DISTRO</code>
 <b>Started at</b> <code>$DATE</code>
 
-<b>Status:</b> <code>${1}</code>" --parse_mode "html"
+<b>Status:</b> <code>${1}</code>" --form photo="$START_BUILD_LOGO" --parse_mode "html"
 	fi
 }
 
@@ -238,6 +250,4 @@ Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
         exit $retVal
     fi
     build_message "Build success ❤️"
-    tg_send_message --chat_id "$TG_CHAT_ID" --text "Build Success ❤️
-Congratsss I'm Happy for you :v"
 }
