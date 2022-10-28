@@ -26,6 +26,10 @@ if [ "$FOX_BRANCH" = "fox_11.0" ]; then
     touch frameworks/base/core/xsd/vts/Android.mk 2>/dev/null || echo
 fi
 
+# Send the Telegram Message
+telegram_message
+echo " "
+
 # Run the Extra Command
 $EXTRA_CMD1
 $EXTRA_CMD2
