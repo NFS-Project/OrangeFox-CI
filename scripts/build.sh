@@ -104,7 +104,6 @@ fi
 retVal=$?
 timeEnd
 statusBuild
-tg_send_document --chat_id "$TG_CHAT_ID" --document "$BUILDLOG" --reply_to_message_id "$CI_MESSAGE_ID"
 
 # Exit
 exit 0

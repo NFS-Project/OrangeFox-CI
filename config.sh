@@ -160,7 +160,7 @@ progress() {
             if [[ "${NUMBER}" -le  "99" ]]; then
                 if [[ "${NUMBER}" != "${NUMBER_OLD}" ]] && [[ "$NUMBER" != "" ]] && ! cat $BUILDLOG | tail  -n 1 | grep "glob" > /dev/null && ! cat $BUILDLOG | tail  -n 1 | grep "including" > /dev/null && ! cat $BUILDLOG | tail  -n 1 | grep "soong" > /dev/null && ! cat $BUILDLOG | tail  -n 1 | grep "finishing" > /dev/null; then
                 echo -e "BOTLOG: Percentage changed to ${NUMBER}%"
-                    build_message "🛠️ Building... ${NUMBER}%" > /dev/null
+                    build_message "🛠️ Building... ${NUMBER}%💨" > /dev/null
                 fi
             NUMBER_OLD=${NUMBER}
             fi
@@ -177,25 +177,29 @@ progress() {
 
 build_message() {
 	if [ "$CI_MESSAGE_ID" = "" ]; then
-CI_MESSAGE_ID=$(tg_send_message --chat_id "$TG_CHAT_ID" --text "<b>=== Starting Build OrangeFox ===</b>
-<b>Branch:</b> <code>${FOX_BRANCH}</code>
-<b>Device:</b> <code>${DEVICE}</code>
-<b>Type:</b> <code>${BUILDTYPE}</code>
-<b>Job:</b> <code>$(nproc --all) Paralel processing</code>
-<b>Running on:</b> <code>$DISTRO</code>
-<b>Started at</b> <code>$DATE</code>
+CI_MESSAGE_ID=$(tg_send_message --chat_id "$TG_CHAT_ID" --text "<b>=== 🦊 OrangeFox Recovery CI ===</b>
+<b>🖥 Branch:</b> ${FOX_BRANCH}
+<b>📱 Device:</b> ${DEVICE}
+<b>📟 Job:</b> $(nproc --all) Paralel processing
+<b>🗃 Penyimpanan:</b> 5TB
+<b>📈 Digunakan:</b> 54.32GB
+<b>📉 Tersisa:</b> 4638GB
+<b>⏳ Running on:</b> $DISTRO
+<b>📅 Started at:</b> $DATE
 
-<b>Status:</b> <code>${1}</code>" --parse_mode "html" | jq .result.message_id)
+<b>⚙️ Status:</b> ${1}" --parse_mode "html" | jq .result.message_id)
 	else
-tg_edit_message_text --chat_id "$TG_CHAT_ID" --message_id "$CI_MESSAGE_ID" --text "<b>=== Starting Build OrangeFox ===</b>
-<b>Branch:</b> <code>${FOX_BRANCH}</code>
-<b>Device:</b> <code>${DEVICE}</code>
-<b>Type:</b> <code>${BUILDTYPE}</code>
-<b>Job:</b> <code>$(nproc --all) Paralel processing</code>
-<b>Running on:</b> <code>$DISTRO</code>
-<b>Started at</b> <code>$DATE</code>
+tg_edit_message_text --chat_id "$TG_CHAT_ID" --message_id "$CI_MESSAGE_ID" --text "<b>=== 🦊 OrangeFox Recovery CI ===</b>
+<b>🖥 Branch:</b> ${FOX_BRANCH}
+<b>📱 Device:</b> ${DEVICE}
+<b>📟 Job:</b> $(nproc --all) Paralel processing
+<b>🗃 Penyimpanan:</b> 5TB
+<b>📈 Digunakan:</b> 54.32GB
+<b>📉 Tersisa:</b> 4638GB
+<b>⏳ Running on:</b> $DISTRO
+<b>📅 Started at:</b> $DATE
 
-<b>Status:</b> <code>${1}</code>" --parse_mode "html"
+<b>⚙️ Status</b> <code>${1}</code>" --parse_mode "html"
 	fi
 }
 
@@ -217,7 +221,7 @@ Sudah kubilang yang teliti 😡"
         build_message "Build Aborted 👎 with Code Exit ${retVal}, See log.
 
 Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
-        tg_send_message --chat_id "$TG_CHAT_ID_SECOND" --text "Build Aborted 💔 with Code Exit ${retVal}."
+        tg_send_message --chat_id "$TG_CHAT_ID_SECOND" --text "Build Aborted ❌ with Code Exit ${retVal}."
         echo "Build Aborted"
         tg_send_document --chat_id "$TG_CHAT_ID" --document "$BUILDLOG" --reply_to_message_id "$CI_MESSAGE_ID"
         LOGTRIM="$CDIR/out/log_trimmed.log"
@@ -226,10 +230,10 @@ Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
         exit $retVal
     fi
     if [[ $retVal -ne 0 ]]; then
-        build_message "Build Error 💔 with Code Exit ${retVal}, See log.
+        build_message "Build Error ❌ with Code Exit ${retVal}, See log.
 
 Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
-        tg_send_message --chat_id "$TG_CHAT_ID_SECOND" --text "Build Error 💔 with Code Exit ${retVal}."
+        tg_send_message --chat_id "$TG_CHAT_ID_SECOND" --text "Build Error ❌ with Code Exit ${retVal}."
         echo "Build Error"
         tg_send_document --chat_id "$TG_CHAT_ID" --document "$BUILDLOG" --reply_to_message_id "$CI_MESSAGE_ID"
         LOGTRIM="$CDIR/out/log_trimmed.log"
@@ -237,7 +241,5 @@ Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
         tg_send_document --chat_id "$TG_CHAT_ID" --document "$LOGTRIM" --reply_to_message_id "$CI_MESSAGE_ID"
         exit $retVal
     fi
-    build_message "Build success ❤️"
-    tg_send_message --chat_id "$TG_CHAT_ID" --text "Build Success ❤️
-Congratsss I'm Happy for you :v"
+    build_message "Build success ✅"
 }
