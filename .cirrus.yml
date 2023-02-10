@@ -5,10 +5,6 @@ env:
     # Config
     CONFIG: config.sh
 
-    # Telegram
-    TG_CHAT_ID: ENCRYPTED[b7cf3a86116a59a9b0ca082d06108b2c2a4cac1992037ecd9d39bf963c7810f3e06fd907ebdd688049279fade482eebd]
-    TG_TOKEN: ENCRYPTED[b0f13e1e92714a7362d7818ed4ed0f97acb75cfaf54d959909bf8d7829a9ce32cd49d4d5d7ec6127fd7ad5d846a963c9]
-
     # Cirrus Specific Vars (Do *NOT* Change)
     WORKDIR: "/tmp"
     CIRRUS_CLONE_DEPTH: "1"
