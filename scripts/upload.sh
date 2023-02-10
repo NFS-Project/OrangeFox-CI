@@ -76,15 +76,6 @@ echo -e \
 TG_TEXT=$(< tg.html)
 telegram_message "$TG_TEXT"
 
-cd $WORKDIR
-com ()
-{
-  tar --use-compress-program="pigz -k -$2 " -cf $1.tar.gz $1
-}
-time com ccache 1
-rclone copy --drive-chunk-size 256M --stats 1s ccache.tar.gz NFS:recovery/ccache/$DEVICE -P
-rm -rf ccache.tar.gz
-
 echo " "
 
 # Exit
