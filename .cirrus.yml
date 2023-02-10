@@ -28,9 +28,6 @@ task:
   Checks_script:
       - bash $CIRRUS_WORKING_DIR/scripts/checks.sh
 
-  Load-ccache_background_script:
-      - bash $CIRRUS_WORKING_DIR/scripts/ccache.sh
-
   Sync_script:
       - bash $CIRRUS_WORKING_DIR/scripts/sync.sh
 
