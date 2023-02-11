@@ -61,7 +61,8 @@ echo -e \
 <b>📥 oshi.at :</b> <a href=\"${SHORT_URL}${MIRROR_LINK}\">Download</a>
 <b>📅 Date :</b> "$(date +%d\ %B\ %Y)"
 <b>🕔 Time :</b> "$(date +"%T")"
-<b>💬 Changelog :</b> "${DT_CHANGELOG}
+<b>💬 Changelog :</b>
+"${DT_CHANGELOG}"
 
 <b>📕 MD5 :-</b> <code>"$(md5sum $FILENAME | cut -d' ' -f1)"</code>
 <b>📘 SHA1 :-</b> <code>"$(sha1sum $FILENAME | cut -d' ' -f1)"</code>
