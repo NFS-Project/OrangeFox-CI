@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Changelog of Device tree
+DT_CHANGELOG="
+• Fix brightness max value
+• Use prebuild kernel to latest version (4.9.337)
+• Compiller with Clang 17.0 Lld 17.0"
+
 # Default Branch for Orangefox
 FOX_BRANCH="fox_12.1"
 ARGS_EXTRA=""
