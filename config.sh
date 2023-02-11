@@ -33,7 +33,7 @@ OUTPUT="OrangeFox*.zip"
 
 # Extra Command
 EXTRA_CMD1="git clone https://github.com/OrangeFoxRecovery/Avatar.git misc"
-EXTRA_CMD2="git clone --depth=1 https://github.com/TeamWin/android_device_xiaomi_mithorium-common -b android-12.1 device/xiaomi/mithorium-common"
+EXTRA_CMD2="git clone --depth=1 https://github.com/Mi-Thorium/twrp_device_xiaomi_mithorium-common -b android-12.1 device/xiaomi/mithorium-common"
 EXTRA_CMD3=""
 EXTRA_CMD4=""
 EXTRA_CMD5=""

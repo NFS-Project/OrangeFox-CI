@@ -1,3 +1,5 @@
-• Fix brightness max value%0A
-• Use prebuild kernel to latest version (4.9.337)%0A
-• Compiller with Clang 17.0 Lld 17.0%0A
+• Fix brightness max value
+• Use prebuild kernel to latest version (4.9.337)
+• Compiller with Clang 17.0 Lld 17.0
+• Move firmware directories out of /vendor
+• Add "printk.devkmsg=on" to kernel commandline
