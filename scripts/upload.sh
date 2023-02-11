@@ -46,12 +46,6 @@ curl -T $FILENAME https://oshi.at/${FILENAME}/${TIMEOUT} > mirror.txt || { echo 
 DL_LINK=$(cat link.txt | grep Download | cut -d\  -f3)
 MIRROR_LINK=$(cat mirror.txt | grep Download | cut -d\  -f1)
 
-# Show the Download Link
-echo "=============================================="
-echo "Download Link: ${DL_LINK}" || { echo "ERROR: Failed to Upload the Build!"; }
-echo "Mirror: ${MIRROR_LINK}" || { echo "WARNING: Failed to Mirror the Build!"; }
-echo "=============================================="
-
 # Send the Message on Telegram
 echo -e \
 "
@@ -63,8 +57,8 @@ echo -e \
 <b>🖥 Branch Build :</b> "${FOX_BRANCH}"
 <b>📂 Size :</b> "$(ls -lh $FILENAME | cut -d ' ' -f5)"
 <b>⏰ Timer Build :</b> "$(grep "#### build completed successfully" $SYNC_PATH/build.log -m 1 | cut -d '(' -f 2)"
-<b>📥 WeTransfer :</b> <a href=\"${DL_LINK}\">Download</a>
-<b>📥 oshi.at :</b> <a href=\"${MIRROR_LINK}\">Download</a>
+<b>📥 WeTransfer :</b> <a href=\"${SHORT_URL}${DL_LINK}\">Download</a>
+<b>📥 oshi.at :</b> <a href=\"${SHORT_URL}${MIRROR_LINK}\">Download</a>
 <b>📅 Date :</b> "$(date +%d\ %B\ %Y)"
 <b>🕔 Time :</b> "$(date +"%T")"
 
